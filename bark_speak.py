@@ -125,6 +125,7 @@ def split_text_prompt(text_prompt, maxword=30):
 
     # 规则1：拆分为以','或'.'结尾的小段
     segments = re.split(r'(?<=[,.])\s*', text_prompt)
+    segments = list(filter(None, segments))
 
     # 规则4：删除除英文句号、逗号和单个空格以外的其他符号
     segments = [re.sub(r'[^a-zA-Z0-9,. ]', '', segment) for segment in segments]
@@ -152,7 +153,8 @@ def split_text_prompt(text_prompt, maxword=30):
         result.append(buffer.strip())
 
     # 规则6：尽量以句号结尾
-    result = [segment.rstrip(',') + '.' if not segment.endswith('.') else segment for segment in result]
+    result = [segment.rstrip(',') + '.' if not segment.endswith('.') else segment for segment in result if
+              segment != '.']
 
     return result, len(result)
 
@@ -203,14 +205,14 @@ def main(args):
                 gen_and_save_audio(prompt, history_prompt, text_temp, waveform_temp, filename, output_dir)
         if args.integration:
             print("Integrating...")
-            Integrate(output_dir=output_dir, outname=args.outname)
+            outname = first_word + ".wav"
+            Integrate(output_dir=output_dir, outname=outname)
 
 if __name__ == "__main__":
     text_prompt = """
-The policies of the eccentric government [stand in strong contrast to] conventional political strategies, 
-as they [hover around] (focus on) unconventional ideas and priorities. [Such a high premium] is [placed on] 
-(emphasized) these unorthodox approaches, driven by the belief that they will yield surprising results. 
-The leaders are [motivated by the desire to] challenge traditional norms and explore new possibilities in governance.
+As the [up and coming] athlete faced a doping scandal, his sponsorship deals seemed to [be a crapshoot]. 
+To clear his mind, he would [veg out] (relax) [idly], [mulling over] whether to [sign a slip] authorizing payments 
+using his [debit card] for the latest sports gear or peruse [take-out menus] to indulge in comfort food.
     """
 
     parser = argparse.ArgumentParser(description="""
