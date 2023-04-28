@@ -22,6 +22,7 @@ def Integrate(output_dir=None, outname=None):
     for wav_file in wav_files:
         audio_data.append(wave.open(wav_file, 'rb'))
     # 创建一个新的音频文件
+    outname = os.path.join(output_dir, outname)
     new_wav = wave.open(outname, 'wb')
     # 配置声道数、量化位数和采样频率
     new_wav.setnchannels(1)
